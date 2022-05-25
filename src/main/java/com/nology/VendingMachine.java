@@ -87,7 +87,7 @@ public class VendingMachine implements IVendingMachine {
             }
             productsExist = false;
             for (int i = 0; i < products.size(); i++) {
-              if(this.products.get(i).getQuantity() == 0) {
+              if(this.products.get(i).getQuantity() != 0) {
                   productsExist = true;
               }
             }
