@@ -36,17 +36,67 @@ public class VendingMachine implements IVendingMachine {
         Collections.sort(products, compareByCategory);
 
         for (int i = 0; i < this.products.size(); i++) {
-            System.out.println("product: " + this.products.get(i).getName() + ", category: " + this.products.get(i).getCategory() + ", price: £" + this.products.get(i).getPrice() + ", Available: " + this.products.get(i).getQuantity());
+            if (this.products.get(i).getQuantity() == 0) {
+                System.out.println("product: "
+                        + this.products.get(i).getName()
+                        + ", category: " + this.products.get(i).getCategory()
+                        + ", price: £" + this.products.get(i).getPrice() + ", Out of Stock");
+            } else {
+                System.out.println("product: "
+                        + this.products.get(i).getName()
+                        + ", category: " + this.products.get(i).getCategory()
+                        + ", price: £" + this.products.get(i).getPrice() + ", Available: "
+                        + this.products.get(i).getQuantity());
+            }
         }
     }
 
     @Override
-    public void buy(Product product) {
+    public void buy() {
+        boolean productsExist;
+        do {
+            displayProducts();
+            System.out.println("Please enter the name of the product to buy");
+            Scanner scanner = new Scanner(System.in);
+            String name = scanner.next();
+            System.out.println("Please enter the quantity");
+            int quantity = scanner.nextInt();
+            double amountToPay;
+            for (int i = 0; i < products.size(); i++) {
+                if (name.toLowerCase().equals(this.products.get(i).getName().toLowerCase())) {
+                    if (this.products.get(i).getQuantity() == 0) {
+                        System.out.println("Sorry this item is out of stock");
+                    } else {
+                        amountToPay = this.products.get(i).getPrice() * quantity;
+                        System.out.println("Please pay £" + amountToPay);
+                        double amountPaid = scanner.nextDouble();
+                        double amountToReturn = amountPaid - amountToPay;
+                        if (amountToReturn < 0) {
+                            System.out.println("Insufficient payment made");
+                        } else {
+                            System.out.println("product: "
+                                    + this.products.get(i).getName()
+                                    + ", category: " + this.products.get(i).getCategory()
+                                    + ", price: £" + this.products.get(i).getPrice());
+                            System.out.println("Your change is: " + amountToReturn);
+                        }
+                        this.products.get(i).setQuantity(this.products.get(i).getQuantity() - quantity);
+                        System.out.println("The availability of this product now is " + this.products.get(i).getQuantity());
+                    }
+                }
+            }
+            productsExist = false;
+            for (int i = 0; i < products.size(); i++) {
+              if(this.products.get(i).getQuantity() == 0) {
+                  productsExist = true;
+              }
+            }
+        } while(productsExist == true);
 
     }
 
     @Override
-    public void refill(Product product) {
+    public void refill() {
 
     }
 
@@ -57,7 +107,7 @@ public class VendingMachine implements IVendingMachine {
 
     public static void main(String[] args) {
       VendingMachine vendingMachine = new VendingMachine();
-        vendingMachine.displayProducts();
+        vendingMachine.buy();
 
     }
 }
